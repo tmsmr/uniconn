@@ -24,12 +24,12 @@ class Display:
         return '%s (%dx%d)' % (type(self.unicorn).__name__, self.width, self.height)
 
     def success(self):
-        self.graphics.set_pen(self.graphics.create_pen(0, 40, 0))
+        self.graphics.set_pen(self.graphics.create_pen(0, 255, 0))
         self.graphics.clear()
         self.unicorn.update(self.graphics)
 
     def error(self):
-        self.graphics.set_pen(self.graphics.create_pen(40, 0, 0))
+        self.graphics.set_pen(self.graphics.create_pen(255, 0, 0))
         self.graphics.clear()
         self.unicorn.update(self.graphics)
 
@@ -38,7 +38,7 @@ class Display:
         self.graphics.clear()
         self.unicorn.update(self.graphics)
 
-    def write(self, message):
+    def write(self, message, error=False, success=False):
         self.graphics.set_pen(self.graphics.create_pen(0, 0, 0))
         self.graphics.clear()
         self.graphics.set_font("bitmap8")
@@ -48,6 +48,11 @@ class Display:
             return
         x = round((self.width - width) / 2)
         y = round((self.height - 8) / 2)
-        self.graphics.set_pen(self.graphics.create_pen(40, 40, 40))
+        if error:
+            self.graphics.set_pen(self.graphics.create_pen(255, 0, 0))
+        elif success:
+            self.graphics.set_pen(self.graphics.create_pen(255, 255, 0))
+        else:
+            self.graphics.set_pen(self.graphics.create_pen(255, 255, 255))
         self.graphics.text(message, x, y, scale=1)
         self.unicorn.update(self.graphics)
