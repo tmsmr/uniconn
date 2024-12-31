@@ -4,11 +4,13 @@
     "galactic-unicorn": {
       "ssid": "my-wifi",
       "psk": "insecure",
+      "country": "DE",
       "type": "GALACTIC"
     },
     "cosmic-unicorn": {
       "ssid": "my-wifi",
       "psk": "insecure",
+      "country": "DE",
       "type": "COSMIC"
     }
   }

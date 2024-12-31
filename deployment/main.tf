@@ -31,6 +31,7 @@ resource "local_file" "uniconn_config" {
     uniconn_type    = each.value.type
     wifi_ssid       = each.value.ssid
     wifi_psk        = each.value.psk
+    wifi_country    = each.value.country
   })
   filename = "${path.module}/unicorns/tmp/${each.key}/config.json"
 }
