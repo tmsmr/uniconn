@@ -26,8 +26,8 @@ resource "local_file" "uniconn_config" {
     mqtt_host       = data.aws_iot_endpoint.current.endpoint_address
     mqtt_port       = 8883
     client_id       = random_uuid.uniconn_client_id[each.key].result
-    uniconn_topic   = "/${random_pet.deployment_id.id}/${each.key}/pixels"
-    broadcast_topic = "/${random_pet.deployment_id.id}/pixels"
+    uniconn_topic   = "${random_pet.deployment_id.id}/${each.key}/pixels"
+    broadcast_topic = "${random_pet.deployment_id.id}/all/pixels"
   })
   filename = "${path.module}/unicorns/tmp/${each.key}/config.json"
 }

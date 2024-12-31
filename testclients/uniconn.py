@@ -26,12 +26,12 @@ mqttc.tls_set(
 def on_connect(client, userdata, flags, reason_code, properties):
     print("on_connect: " + str(reason_code))
     print("subscribe " + config['uniconn_topic'] + ": " + client.subscribe(
-        (config['uniconn_topic'], SubscribeOptions(qos=1))
+        (config['uniconn_topic'], SubscribeOptions(qos=0))
     )[0].name)
 
 
 def on_message(client, userdata, msg):
-    print("{}: {}".format(msg.topic, msg.payload.decode()))
+    print(msg.topic + ": " + msg.payload.decode())
 
 def on_log(client, userdata, level, buf):
     print("log: " + buf)

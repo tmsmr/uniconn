@@ -11,7 +11,6 @@ resource "aws_iot_policy" "uniconn_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid = "AllowConnect"
         Action = [
           "iot:Connect",
         ]
@@ -19,36 +18,32 @@ resource "aws_iot_policy" "uniconn_policy" {
         Resource = "${local.client_arn_base}/${random_uuid.uniconn_client_id[each.key].result}"
       },
       {
-        Sid = "AllowSubscribe"
         Action = [
           "iot:Subscribe",
         ]
         Effect   = "Allow"
-        Resource = "${local.topicfilter_arn_base}/${random_pet.deployment_id.id}/${each.key}/pixels"
+        Resource = "${local.topicfilter_arn_base}/${random_pet.deployment_id.id}/${each.key}/*"
       },
       {
-        Sid = "AllowSubscribeBroadcast"
         Action = [
           "iot:Subscribe",
         ]
         Effect   = "Allow"
-        Resource = "${local.topicfilter_arn_base}/${random_pet.deployment_id.id}/pixels"
+        Resource = "${local.topicfilter_arn_base}/${random_pet.deployment_id.id}/all/*"
       },
       {
-        Sid = "AllowReceive"
         Action = [
           "iot:Receive",
         ]
         Effect   = "Allow"
-        Resource = "${local.topic_arn_base}/${random_pet.deployment_id.id}/${each.key}/pixels"
+        Resource = "${local.topic_arn_base}/${random_pet.deployment_id.id}/${each.key}/*"
       },
       {
-        Sid = "AllowReceiveBroadcast"
         Action = [
           "iot:Receive",
         ]
         Effect   = "Allow"
-        Resource = "${local.topic_arn_base}/${random_pet.deployment_id.id}/pixels"
+        Resource = "${local.topic_arn_base}/${random_pet.deployment_id.id}/all/*"
       }
     ]
   })
