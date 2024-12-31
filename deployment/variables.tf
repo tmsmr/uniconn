@@ -2,6 +2,7 @@ variable "uniconns" {
   type = map(object({
     ssid = string
     psk  = string
+    type = string
   }))
 }
 

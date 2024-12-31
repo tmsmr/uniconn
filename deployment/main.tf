@@ -28,6 +28,9 @@ resource "local_file" "uniconn_config" {
     client_id       = random_uuid.uniconn_client_id[each.key].result
     uniconn_topic   = "${random_pet.deployment_id.id}/${each.key}/pixels"
     broadcast_topic = "${random_pet.deployment_id.id}/all/pixels"
+    uniconn_type    = each.value.type
+    wifi_ssid       = each.value.ssid
+    wifi_psk        = each.value.psk
   })
   filename = "${path.module}/unicorns/tmp/${each.key}/config.json"
 }

@@ -3,11 +3,13 @@
   "uniconns": {
     "galactic-unicorn": {
       "ssid": "my-wifi",
-      "psk": "insecure"
+      "psk": "insecure",
+      "type": "GALACTIC"
     },
     "cosmic-unicorn": {
       "ssid": "my-wifi",
-      "psk": "insecure"
+      "psk": "insecure",
+      "type": "COSMIC"
     }
   }
 }
