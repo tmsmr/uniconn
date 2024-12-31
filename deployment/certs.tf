@@ -6,13 +6,13 @@ resource "aws_iot_certificate" "uniconn_cert" {
 resource "local_file" "uniconn_cert_pem" {
   for_each = var.uniconns
   content  = aws_iot_certificate.uniconn_cert[each.key].certificate_pem
-  filename = "${path.module}/unicorns/tmp/${each.key}/cert.pem"
+  filename = "${path.module}/unicorns/tmp/${each.key}/x509/cert.pem"
 }
 
 resource "local_file" "uniconn_key_pem" {
   for_each = var.uniconns
   content  = aws_iot_certificate.uniconn_cert[each.key].private_key
-  filename = "${path.module}/unicorns/tmp/${each.key}/key.pem"
+  filename = "${path.module}/unicorns/tmp/${each.key}/x509/key.pem"
 }
 
 data "http" "aws_root_ca_pem" {
@@ -22,7 +22,7 @@ data "http" "aws_root_ca_pem" {
 resource "local_file" "aws_root_ca_pem" {
   for_each = var.uniconns
   content  = data.http.aws_root_ca_pem.response_body
-  filename = "${path.module}/unicorns/tmp/${each.key}/ca.pem"
+  filename = "${path.module}/unicorns/tmp/${each.key}/x509/ca.pem"
 }
 
 resource "null_resource" "pem_to_der" {
@@ -31,12 +31,16 @@ resource "null_resource" "pem_to_der" {
     key = each.key
   }
   provisioner "local-exec" {
-    command = "openssl x509 -in ${local_file.uniconn_cert_pem[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/cert.der"
+    command = "openssl x509 -in ${local_file.uniconn_cert_pem[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/x509/cert.der"
   }
   provisioner "local-exec" {
-    command = "openssl rsa -in ${local_file.uniconn_key_pem[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/key.der"
+    command = "openssl rsa -in ${local_file.uniconn_key_pem[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/x509/key.der"
   }
   provisioner "local-exec" {
-    command = "openssl x509 -in ${local_file.aws_root_ca_pem[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/ca.der"
+    command = "openssl x509 -in ${local_file.aws_root_ca_pem[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/x509/ca.der"
+  }
+  provisioner "local-exec" {
+    when = destroy
+    command = "rm ${path.module}/unicorns/tmp/${each.key}/x509/*.der"
   }
 }

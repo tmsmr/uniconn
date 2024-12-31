@@ -1,11 +1,11 @@
 {
   "aws_region": "eu-central-1",
   "uniconns": {
-    "galactic-unicorn-1": {
+    "galactic-unicorn": {
       "ssid": "my-wifi",
       "psk": "insecure"
     },
-    "cosmic-unicorn-1": {
+    "cosmic-unicorn": {
       "ssid": "my-wifi",
       "psk": "insecure"
     }
