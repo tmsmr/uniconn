@@ -48,3 +48,27 @@ resource "aws_iot_policy" "uniconn_policy" {
     ]
   })
 }
+
+resource "aws_iot_policy" "client_policy" {
+  for_each = var.clients
+  name     = "client-policy-${each.key}-${random_pet.deployment_id.id}"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "iot:Connect",
+        ]
+        Effect   = "Allow"
+        Resource = "${local.client_arn_base}/${random_uuid.client_client_id[each.key].result}"
+      },
+      {
+        Action = [
+          "iot:Publish",
+        ]
+        Effect   = "Allow"
+        Resource = "${local.topic_arn_base}/${random_pet.deployment_id.id}/*"
+      }
+    ]
+  })
+}

@@ -7,6 +7,10 @@ variable "uniconns" {
   }))
 }
 
+variable "clients" {
+  type = set(string)
+}
+
 variable "aws_region" {
   type = string
 }

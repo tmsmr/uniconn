@@ -3,10 +3,21 @@ resource "aws_iot_certificate" "uniconn_cert" {
   active   = true
 }
 
+resource "aws_iot_certificate" "client_cert" {
+  for_each = var.clients
+  active   = true
+}
+
 resource "local_file" "uniconn_cert_pem" {
   for_each = var.uniconns
   content  = aws_iot_certificate.uniconn_cert[each.key].certificate_pem
   filename = "${path.module}/unicorns/tmp/${each.key}/x509/cert.pem"
+}
+
+resource "local_file" "client_cert_pem" {
+  for_each = var.clients
+  content  = aws_iot_certificate.client_cert[each.key].certificate_pem
+  filename = "${path.module}/clients/tmp/${each.key}/x509/cert.pem"
 }
 
 resource "local_file" "uniconn_key_pem" {
@@ -15,14 +26,26 @@ resource "local_file" "uniconn_key_pem" {
   filename = "${path.module}/unicorns/tmp/${each.key}/x509/key.pem"
 }
 
+resource "local_file" "client_key_pem" {
+  for_each = var.clients
+  content  = aws_iot_certificate.client_cert[each.key].private_key
+  filename = "${path.module}/clients/tmp/${each.key}/x509/key.pem"
+}
+
 data "http" "aws_root_ca_pem" {
   url = "https://www.amazontrust.com/repository/AmazonRootCA1.pem"
 }
 
-resource "local_file" "aws_root_ca_pem" {
+resource "local_file" "aws_root_ca_pem_uniconns" {
   for_each = var.uniconns
   content  = data.http.aws_root_ca_pem.response_body
   filename = "${path.module}/unicorns/tmp/${each.key}/x509/ca.pem"
+}
+
+resource "local_file" "aws_root_ca_pem_clients" {
+  for_each = var.clients
+  content  = data.http.aws_root_ca_pem.response_body
+  filename = "${path.module}/clients/tmp/${each.key}/x509/ca.pem"
 }
 
 resource "null_resource" "pem_to_der" {
@@ -37,7 +60,7 @@ resource "null_resource" "pem_to_der" {
     command = "openssl rsa -in ${local_file.uniconn_key_pem[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/x509/key.der"
   }
   provisioner "local-exec" {
-    command = "openssl x509 -in ${local_file.aws_root_ca_pem[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/x509/ca.der"
+    command = "openssl x509 -in ${local_file.aws_root_ca_pem_uniconns[each.key].filename} -outform der -out ${path.module}/unicorns/tmp/${each.key}/x509/ca.der"
   }
   provisioner "local-exec" {
     when = destroy
