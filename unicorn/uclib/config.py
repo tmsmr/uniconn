@@ -8,28 +8,33 @@ class Config:
         COSMIC = 2
 
     @staticmethod
-    def load(fp):
-        with open(fp) as cf:
-            data = ujson.load(cf)
+    def load(path):
+        with open(path) as config_file:
+            data = ujson.load(config_file)
         return Config(**data)
 
-    def __init__(self, mqtt_host, mqtt_port, client_id, uniconn_topic, broadcast_topic,
-                 uniconn_type, wifi_psk, wifi_ssid, wifi_country):
+    def __init__(self,
+                 mqtt_host, mqtt_port, mqtt_client_id, mqtt_topic_base, mqtt_all_topic_base,
+                 unicorn_type,
+                 wifi_psk, wifi_ssid, wifi_country):
         self.mqtt_host = mqtt_host
         self.mqtt_port = mqtt_port
-        self.client_id = client_id
-        self.uniconn_topic = uniconn_topic
-        self.broadcast_topic = broadcast_topic
+        self.mqtt_client_id = mqtt_client_id
+        self.mqtt_topic_base = mqtt_topic_base
+        self.mqtt_all_topic_base = mqtt_all_topic_base
         self.wifi_psk = wifi_psk
         self.wifi_ssid = wifi_ssid
         self.wifi_country = wifi_country
 
-        if uniconn_type == 'STELLAR':
+        if unicorn_type == 'STELLAR':
             self.unicorn_type = Config.UnicornType.STELLAR
-        elif uniconn_type == 'GALACTIC':
+        elif unicorn_type == 'GALACTIC':
             self.unicorn_type = Config.UnicornType.GALACTIC
-        elif uniconn_type == 'COSMIC':
+        elif unicorn_type == 'COSMIC':
             self.unicorn_type = Config.UnicornType.COSMIC
 
     def __str__(self):
-        return self.__dict__
+        return 'mqtt_host: %s, mqtt_port: %d, mqtt_client_id: %s, mqtt_topic_base: %s, mqtt_all_topic_base: %s, unicorn_type: %d, wifi_psk: ***, wifi_ssid: %s, wifi_country: %s' % (
+            self.mqtt_host, self.mqtt_port, self.mqtt_client_id, self.mqtt_topic_base, self.mqtt_all_topic_base,
+            self.unicorn_type,
+            self.wifi_ssid, self.wifi_country)
