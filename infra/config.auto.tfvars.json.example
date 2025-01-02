@@ -1,0 +1,19 @@
+{
+  "unicorns": {
+    "galactic-unicorn": {
+      "unicorn_type": "GALACTIC",
+      "wifi_ssid": "my-wifi",
+      "wifi_psk": "insecure",
+      "wifi_country": "DE"
+    },
+    "cosmic-unicorn": {
+      "unicorn_type": "COSMIC",
+      "wifi_ssid": "my-wifi",
+      "wifi_psk": "insecure",
+      "wifi_country": "DE"
+    }
+  },
+  "controllers": [
+    "desktop"
+  ]
+}
