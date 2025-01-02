@@ -30,7 +30,7 @@ resource "archive_file" "unicorn_export" {
   type       = "zip"
   source_dir = "${path.root}/configs/tmp/${each.key}"
   excludes = [
-    "*.pem"
+    "x509/*.pem"
   ]
   output_path = "${path.root}/configs/${each.key}.zip"
   depends_on = [
@@ -47,7 +47,7 @@ resource "archive_file" "controller_export" {
   type       = "zip"
   source_dir = "${path.root}/configs/tmp/${each.key}"
   excludes = [
-    "*.der"
+    "x509/*.der"
   ]
   output_path = "${path.root}/configs/${each.key}.zip"
   depends_on = [
