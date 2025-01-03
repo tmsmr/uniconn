@@ -45,4 +45,4 @@ while True:
         topic = uc['topic_base'] + '/text'
         print("publishing " + topic + ": " + val)
         print(mqttc.publish(topic, val))
-    sleep(5)
+    sleep(1)
