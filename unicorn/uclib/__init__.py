@@ -1,13 +1,15 @@
 import gc
 
-from .wifi import Wifi
+from .wifi import WiFi, disable
 from .config import Config
 from .display import Display
 from .mqtt import Mqtt
 
-def cleanup():
+
+def run_gc():
+    before = gc.mem_alloc()
     gc.collect()
-    log('INFO', 'gc finished')
+    log('INFO', 'gc freed %.fk' % ((before - gc.mem_alloc()) / 1024))
 
 
 def log(level, message):
