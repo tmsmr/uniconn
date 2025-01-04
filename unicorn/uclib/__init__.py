@@ -6,6 +6,13 @@ from .rtc import update_rtc, rtc_time_str
 from .display import Display
 from .mqtt import Mqtt
 
+logging = False
+
+
+def enable_logging(enabled):
+    global logging
+    logging = enabled
+
 
 def run_gc():
     before = gc.mem_alloc()
@@ -14,15 +21,12 @@ def run_gc():
 
 
 def log(level, message):
-    print('[%.fk/%.fk] %s: %s' % (gc.mem_alloc() / 1024, (gc.mem_alloc() + gc.mem_free()) / 1024, level, message))
+    if logging:
+        print('[%.fk/%.fk] %s: %s' % (gc.mem_alloc() / 1024, (gc.mem_alloc() + gc.mem_free()) / 1024, level, message))
 
 
 def info(message):
     log('INFO', message)
-
-
-def warn(message):
-    log('WARN', message)
 
 
 def error(message):

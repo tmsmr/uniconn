@@ -14,15 +14,18 @@ class Config:
         return Config(**data)
 
     def __init__(self,
+                 logging_enabled,
                  mqtt_host, mqtt_port, mqtt_client_id, mqtt_topic_base, mqtt_all_topic_base, mqtt_status_topic,
                  unicorn_type,
                  wifi_psk, wifi_ssid, wifi_country):
+        self.logging_enabled = logging_enabled
         self.mqtt_host = mqtt_host
         self.mqtt_port = mqtt_port
         self.mqtt_client_id = mqtt_client_id
         self.mqtt_topic_base = mqtt_topic_base
         self.mqtt_all_topic_base = mqtt_all_topic_base
         self.mqtt_status_topic = mqtt_status_topic
+        self.unicorn_type_str = unicorn_type
         self.wifi_psk = wifi_psk
         self.wifi_ssid = wifi_ssid
         self.wifi_country = wifi_country

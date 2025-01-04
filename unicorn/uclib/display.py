@@ -23,6 +23,9 @@ class Display:
     def __str__(self):
         return '%s (%dx%d)' % (type(self.unicorn).__name__, self.width, self.height)
 
+    def update(self):
+        self.unicorn.update(self.graphics)
+
     def success(self):
         self.graphics.set_pen(self.graphics.create_pen(0, 255, 0))
         self.graphics.clear()
