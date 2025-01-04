@@ -14,7 +14,7 @@ class Config:
         return Config(**data)
 
     def __init__(self,
-                 mqtt_host, mqtt_port, mqtt_client_id, mqtt_topic_base, mqtt_all_topic_base,
+                 mqtt_host, mqtt_port, mqtt_client_id, mqtt_topic_base, mqtt_all_topic_base, mqtt_status_topic,
                  unicorn_type,
                  wifi_psk, wifi_ssid, wifi_country):
         self.mqtt_host = mqtt_host
@@ -22,6 +22,7 @@ class Config:
         self.mqtt_client_id = mqtt_client_id
         self.mqtt_topic_base = mqtt_topic_base
         self.mqtt_all_topic_base = mqtt_all_topic_base
+        self.mqtt_status_topic = mqtt_status_topic
         self.wifi_psk = wifi_psk
         self.wifi_ssid = wifi_ssid
         self.wifi_country = wifi_country
@@ -34,7 +35,8 @@ class Config:
             self.unicorn_type = Config.UnicornType.COSMIC
 
     def __str__(self):
-        return 'mqtt_host: %s, mqtt_port: %d, mqtt_client_id: %s, mqtt_topic_base: %s, mqtt_all_topic_base: %s, unicorn_type: %d, wifi_ssid: %s, wifi_country: %s' % (
+        return 'mqtt_host: %s, mqtt_port: %d, mqtt_client_id: %s, mqtt_topic_base: %s, mqtt_all_topic_base: %s, mqtt_status_topic: %s, unicorn_type: %d, wifi_ssid: %s, wifi_country: %s' % (
             self.mqtt_host, self.mqtt_port, self.mqtt_client_id, self.mqtt_topic_base, self.mqtt_all_topic_base,
+            self.mqtt_status_topic,
             self.unicorn_type,
             self.wifi_ssid, self.wifi_country)
