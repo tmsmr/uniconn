@@ -1,6 +1,5 @@
 from picographics import PicoGraphics
 
-
 class Display:
     def __init__(self, config):
         if config.unicorn_type is config.UnicornType.STELLAR:
@@ -29,17 +28,17 @@ class Display:
     def success(self):
         self.graphics.set_pen(self.graphics.create_pen(0, 255, 0))
         self.graphics.clear()
-        self.unicorn.update(self.graphics)
+        self.update()
 
     def error(self):
         self.graphics.set_pen(self.graphics.create_pen(255, 0, 0))
         self.graphics.clear()
-        self.unicorn.update(self.graphics)
+        self.update()
 
     def clear(self):
         self.graphics.set_pen(self.graphics.create_pen(0, 0, 0))
         self.graphics.clear()
-        self.unicorn.update(self.graphics)
+        self.update()
 
     def write(self, message, error=False, success=False):
         self.graphics.set_pen(self.graphics.create_pen(0, 0, 0))
@@ -58,4 +57,4 @@ class Display:
         else:
             self.graphics.set_pen(self.graphics.create_pen(255, 255, 255))
         self.graphics.text(message, x, y, scale=1)
-        self.unicorn.update(self.graphics)
+        self.update()

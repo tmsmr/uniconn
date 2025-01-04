@@ -47,6 +47,7 @@ class Mqtt:
 
     def tick(self):
         try:
+            self.client.check_msg()
             ping, announce = (False, False)
             now = int(time())
             if now - self.last_ping > MQTT_PING_INTERVAL:
@@ -57,7 +58,6 @@ class Mqtt:
                 self.client.publish(self.announcement[0], self.announcement[1])
                 self.last_announce = now
                 announce = True
-            self.client.check_msg()
             return ping, announce
         except:
             raise RuntimeError('lost connection to broker')
