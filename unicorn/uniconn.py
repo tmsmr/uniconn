@@ -23,7 +23,7 @@ class Uniconn:
         self.jobs = []
 
     def panic(self, msg, comp):
-        self.display.write(comp, error=True)
+        self.display.text(comp, color=Display.RED)
         error(msg)
         sleep(10)
         machine.reset()
@@ -38,7 +38,7 @@ class Uniconn:
         if job.dtype == DrawingJob.DrawingType.TEXT:
             payload = job.data.decode('utf-8')
             info('writing "' + payload + '" to display')
-            self.display.write(payload)
+            self.display.text(payload)
 
     def initialize(self):
         self.conf = Config.load(self.CONFIG_FILE)
@@ -57,7 +57,7 @@ class Uniconn:
         except RuntimeError as e:
             self.panic(e, 'WIFI')
 
-        self.display.write('WIFI', success=True)
+        self.display.text('WIFI', color=Display.GREEN)
         sleep(1)
         self.display.clear()
 
@@ -93,7 +93,7 @@ class Uniconn:
         except Exception as e:
             self.panic(e, 'MQTT')
 
-        self.display.write('MQTT', success=True)
+        self.display.text('MQTT', color=Display.GREEN)
         sleep(1)
         self.display.clear()
 
