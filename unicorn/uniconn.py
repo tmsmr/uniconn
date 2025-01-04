@@ -46,7 +46,7 @@ class Uniconn:
         info('running with config values %s' % str(self.conf))
 
         self.display = Display(self.conf)
-        info('display ' + str(display) + ' initialized')
+        info('display ' + str(self.display) + ' initialized')
 
         try:
             w = WiFi(self.conf)
@@ -84,7 +84,7 @@ class Uniconn:
         try:
             self.mqtt = Mqtt(self.conf, self.callback, [
                 self.conf.mqtt_topic_base + '/text',
-                self.conf.mqtt_topic_base + '/pixels',
+                self.conf.mqtt_all_topic_base + '/text',
                 ], announcement, testament)
             self.mqtt.connect()
             info('connected to broker ' + self.conf.mqtt_host
