@@ -1,6 +1,7 @@
 resource "local_file" "unicorn_config" {
   for_each = module.unicorn
   content = jsonencode(merge(each.value.mqtt_conn_config, {
+    logging_enabled     = false
     mqtt_topic_base     = "${random_pet.deployment.id}/unicorn/${each.key}"
     mqtt_all_topic_base = "${random_pet.deployment.id}/all"
     mqtt_status_topic   = "${random_pet.deployment.id}/status/${each.key}"
