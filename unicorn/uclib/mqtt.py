@@ -35,20 +35,29 @@ class Mqtt:
         self.last_announce = 0
 
     def connect(self):
-        self.client.connect()
+        try:
+            self.client.connect()
+        except:
+            raise RuntimeError('failed to connect to broker')
         for topic in self.topics:
-            self.client.subscribe(topic)
+            try:
+                self.client.subscribe(topic)
+            except:
+                raise RuntimeError('failed to subscribe to topic ' + topic)
 
     def tick(self):
-        ping, announce = (False, False)
-        now = int(time())
-        if now - self.last_ping > MQTT_PING_INTERVAL:
-            self.client.ping()
-            self.last_ping = now
-            ping = True
-        if now - self.last_announce > MQTT_ANNOUNCE_INTERVAL:
-            self.client.publish(self.announcement[0], self.announcement[1])
-            self.last_announce = now
-            announce = True
-        self.client.check_msg()
-        return ping, announce
+        try:
+            ping, announce = (False, False)
+            now = int(time())
+            if now - self.last_ping > MQTT_PING_INTERVAL:
+                self.client.ping()
+                self.last_ping = now
+                ping = True
+            if now - self.last_announce > MQTT_ANNOUNCE_INTERVAL:
+                self.client.publish(self.announcement[0], self.announcement[1])
+                self.last_announce = now
+                announce = True
+            self.client.check_msg()
+            return ping, announce
+        except:
+            raise RuntimeError('lost connection to broker')

@@ -7,7 +7,7 @@ def update_rtc():
         # uses pool.ntp.org
         # supports only UTC
         ntptime.settime()
-    except Exception:
+    except:
         raise RuntimeError('failed to set rtc via ntp')
 
 
