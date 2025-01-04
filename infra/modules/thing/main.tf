@@ -27,7 +27,7 @@ locals {
         "iot:Subscribe",
       ]
       Effect   = "Allow"
-      Resource = "${local.topicfilter_arn_base}/${var.prefix}/${var.name}/*"
+      Resource = "${local.topicfilter_arn_base}/${var.prefix}/unicorn/${var.name}/*"
     },
     {
       Action = [
@@ -41,7 +41,7 @@ locals {
         "iot:Receive",
       ]
       Effect   = "Allow"
-      Resource = "${local.topic_arn_base}/${var.prefix}/${var.name}/*"
+      Resource = "${local.topic_arn_base}/${var.prefix}/unicorn/${var.name}/*"
     },
     {
       Action = [
@@ -49,10 +49,31 @@ locals {
       ]
       Effect   = "Allow"
       Resource = "${local.topic_arn_base}/${var.prefix}/all/*"
+    },
+    {
+      Action = [
+        "iot:Publish",
+      ]
+      Effect   = "Allow"
+      Resource = "${local.topic_arn_base}/${var.prefix}/status/*"
     }
   ])
 
   controller_policy_statements = concat(local.client_policy_statements, [
+    {
+      Action = [
+        "iot:Subscribe",
+      ]
+      Effect   = "Allow"
+      Resource = "${local.topicfilter_arn_base}/${var.prefix}/status/*"
+    },
+    {
+      Action = [
+        "iot:Receive",
+      ]
+      Effect   = "Allow"
+      Resource = "${local.topic_arn_base}/${var.prefix}/status/*"
+    },
     {
       Action = [
         "iot:Publish",

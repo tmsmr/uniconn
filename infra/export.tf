@@ -1,8 +1,9 @@
 resource "local_file" "unicorn_config" {
   for_each = module.unicorn
   content = jsonencode(merge(each.value.mqtt_conn_config, {
-    mqtt_topic_base     = "${random_pet.deployment.id}/${each.key}"
+    mqtt_topic_base     = "${random_pet.deployment.id}/unicorn/${each.key}"
     mqtt_all_topic_base = "${random_pet.deployment.id}/all"
+    mqtt_status_topic   = "${random_pet.deployment.id}/status/${each.key}"
     unicorn_type        = var.unicorns[each.key].unicorn_type
     wifi_ssid           = var.unicorns[each.key].wifi_ssid
     wifi_psk            = var.unicorns[each.key].wifi_psk
@@ -14,11 +15,13 @@ resource "local_file" "unicorn_config" {
 resource "local_file" "controller_config" {
   for_each = module.controller
   content = jsonencode(merge(each.value.mqtt_conn_config, {
-    unicorns = [
+    mqtt_all_topic_base    = "${random_pet.deployment.id}/all"
+    mqtt_status_topic_base = "${random_pet.deployment.id}/status"
+    unicorns               = [
       for name, unicorn in module.unicorn : {
-        unicorn_name = name
-        unicorn_type = var.unicorns[name].unicorn_type
-        topic_base   = "${random_pet.deployment.id}/${name}"
+        unicorn_name    = name
+        unicorn_type    = var.unicorns[name].unicorn_type
+        mqtt_topic_base = "${random_pet.deployment.id}/unicorn/${name}"
       }
     ]
   }))
