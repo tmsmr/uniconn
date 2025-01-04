@@ -30,19 +30,27 @@ def on_connect(client, userdata, flags, reason_code, properties):
 def on_log(client, userdata, level, buf):
     print("log: " + buf)
 
+def on_message(client, userdata, msg):
+    print(msg.topic + ": " + msg.payload.decode())
 
 mqttc.on_connect = on_connect
 mqttc.on_log = on_log
+mqttc.on_message = on_message
 
 mqttc.connect(host=config['mqtt_host'], port=config['mqtt_port'])
+
+mqttc.subscribe(config['mqtt_status_topic_base'] + '/+')
 
 mqttc.loop_start()
 
 while True:
     lt = localtime()
-    val = ':'.join([str(lt.tm_hour), str(lt.tm_min), str(lt.tm_sec)])
+    val = ':'.join([str(lt.tm_hour), str(lt.tm_min)])
+    all_topic = config['mqtt_all_topic_base'] + '/text'
+    print("publishing " + all_topic + ": " + val)
+    print(mqttc.publish(all_topic, val))
     for uc in config['unicorns']:
-        topic = uc['topic_base'] + '/text'
+        topic = uc['mqtt_topic_base'] + '/text'
         print("publishing " + topic + ": " + val)
         print(mqttc.publish(topic, val))
-    sleep(1)
+    sleep(60)
