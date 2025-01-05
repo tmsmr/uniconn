@@ -1,5 +1,7 @@
 from picographics import PicoGraphics
 
+from .symbols import SYMBOLS
+
 
 class Display:
     class Color:
@@ -40,19 +42,17 @@ class Display:
     def update(self):
         self.unicorn.update(self.graphics)
 
-    def success(self):
-        self.graphics.set_pen(self.graphics.create_pen(*Display.GREEN.rgb()))
-        self.graphics.clear()
-        self.update()
-
-    def error(self):
-        self.graphics.set_pen(self.graphics.create_pen(*Display.RED.rgb()))
-        self.graphics.clear()
-        self.update()
-
     def clear(self):
         self.graphics.set_pen(self.graphics.create_pen(*Display.BLACK.rgb()))
         self.graphics.clear()
+        self.update()
+
+    def symbol(self, name, color=None):
+        xd = round((self.width / 2) - (9 / 2))
+        yd = round((self.height / 2) - (9 / 2))
+        self.graphics.set_pen(self.graphics.create_pen(*color.rgb()))
+        for p in SYMBOLS[name]:
+            self.graphics.pixel(xd + p[0], yd + p[1])
         self.update()
 
     def text(self, message, color=None):
@@ -63,7 +63,6 @@ class Display:
         self.graphics.set_font("bitmap8")
         width = self.graphics.measure_text(message, scale=1)
         if width > self.width:
-            self.error()
             return
         x = round((self.width - width) / 2)
         y = round((self.height - 8) / 2)

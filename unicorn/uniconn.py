@@ -17,15 +17,17 @@ class Uniconn:
     CONFIG_FILE = 'config/config.json'
 
     def __init__(self):
+        self.wifi = None
         self.conf = None
         self.display = None
         self.mqtt = None
         self.jobs = []
 
     def panic(self, msg, comp):
-        self.display.text(comp, color=Display.RED)
         error(msg)
+        self.display.symbol(comp, Display.RED)
         sleep(10)
+        self.wifi.disconnect()
         machine.reset()
 
     def callback(self, topic, payload):
@@ -49,17 +51,13 @@ class Uniconn:
         info('display ' + str(self.display) + ' initialized')
 
         try:
-            w = WiFi(self.conf)
-            w.connect()
-            info('wifi connected to ' + self.conf.wifi_ssid + ', got ip ' + w.ifconfig()[0])
+            self.wifi = WiFi(self.conf)
+            self.wifi.connect()
+            info('wifi connected to ' + self.conf.wifi_ssid + ', got ip ' + self.wifi.ifconfig()[0])
             update_rtc()
             info('synchronized rtc via ntp, utc time is ' + rtc_time_str())
         except RuntimeError as e:
-            self.panic(e, 'WIFI')
-
-        self.display.text('WIFI', color=Display.GREEN)
-        sleep(1)
-        self.display.clear()
+            self.panic(e, 'wifi')
 
         announcement = (
             self.conf.mqtt_status_topic,
@@ -85,17 +83,13 @@ class Uniconn:
             self.mqtt = Mqtt(self.conf, self.callback, [
                 self.conf.mqtt_topic_base + '/text',
                 self.conf.mqtt_all_topic_base + '/text',
-                ], announcement, testament)
+            ], announcement, testament)
             self.mqtt.connect()
             info('connected to broker ' + self.conf.mqtt_host
                  + '. subscribed to ' + ', '.join(self.mqtt.topics)
                  + '. testament set to ' + testament[0] + ': ' + testament[1])
         except Exception as e:
-            self.panic(e, 'MQTT')
-
-        self.display.text('MQTT', color=Display.GREEN)
-        sleep(1)
-        self.display.clear()
+            self.panic(e, 'envelope')
 
     def run(self):
         while True:
@@ -108,4 +102,4 @@ class Uniconn:
                 if len(self.jobs) > 0:
                     self.draw(self.jobs.pop(0))
             except Exception as e:
-                self.panic(e, 'MQTT')
+                self.panic(e, 'error')
