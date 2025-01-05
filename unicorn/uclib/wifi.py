@@ -47,6 +47,9 @@ class WiFi:
         return self.nic.isconnected()
 
     def disconnect(self):
-        self.nic.disconnect()
-        self.nic.active(False)
-        self.nic.deinit()
+        try:
+            self.nic.disconnect()
+            self.nic.active(False)
+            self.nic.deinit()
+        except:
+            pass

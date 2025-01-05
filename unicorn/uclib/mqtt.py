@@ -61,3 +61,9 @@ class Mqtt:
             return ping, announce
         except Exception as e:
             raise RuntimeError('lost connection to broker: ' + str(e))
+
+    def disconnect(self):
+        try:
+            self.client.disconnect()
+        except:
+            pass

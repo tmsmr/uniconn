@@ -5,11 +5,8 @@ from uclib import *
 
 
 class DrawingJob:
-    class DrawingType:
-        TEXT = 0
-
-    def __init__(self, dtype, data):
-        self.dtype = dtype
+    def __init__(self, topic, data):
+        self.topic = topic
         self.data = data
 
 
@@ -27,17 +24,17 @@ class Uniconn:
         error(msg)
         self.display.symbol(comp, Display.RED)
         sleep(10)
+        self.mqtt.disconnect()
         self.wifi.disconnect()
         machine.reset()
 
     def callback(self, topic, payload):
         topic = topic.decode('utf-8')
         info('received ' + str(len(payload)) + ' bytes from ' + topic)
-        if topic.endswith('/text'):
-            self.jobs.append(DrawingJob(DrawingJob.DrawingType.TEXT, payload))
+        self.jobs.append(DrawingJob(topic, payload))
 
     def draw(self, job):
-        if job.dtype == DrawingJob.DrawingType.TEXT:
+        if job.topic.endswith('text'):
             payload = job.data.decode('utf-8')
             info('writing "' + payload + '" to display')
             self.display.text(payload)
