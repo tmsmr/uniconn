@@ -16,7 +16,6 @@ class Display:
     BLACK = Color(0, 0, 0)
     WHITE = Color(255, 255, 255)
     RED = Color(255, 0, 0)
-    GREEN = Color(0, 255, 0)
 
     def __init__(self, config):
         if config.unicorn_type is config.UnicornType.STELLAR:

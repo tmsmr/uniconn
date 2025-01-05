@@ -37,13 +37,13 @@ class Mqtt:
     def connect(self):
         try:
             self.client.connect()
-        except:
-            raise RuntimeError('failed to connect to broker')
+        except Exception as e:
+            raise RuntimeError('failed to connect to broker: ' + str(e))
         for topic in self.topics:
             try:
                 self.client.subscribe(topic)
-            except:
-                raise RuntimeError('failed to subscribe to topic ' + topic)
+            except Exception as e:
+                raise RuntimeError('failed to subscribe to topic ' + topic + ' : ' + str(e))
 
     def tick(self):
         try:
@@ -59,5 +59,5 @@ class Mqtt:
                 self.last_announce = now
                 announce = True
             return ping, announce
-        except:
-            raise RuntimeError('lost connection to broker')
+        except Exception as e:
+            raise RuntimeError('lost connection to broker: ' + str(e))
