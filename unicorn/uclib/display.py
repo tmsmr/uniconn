@@ -48,6 +48,7 @@ class Display:
         self.update()
 
     def symbol(self, name, color=None):
+        self.clear()
         xd = round((self.width / 2) - (9 / 2))
         yd = round((self.height / 2) - (9 / 2))
         self.graphics.set_pen(self.graphics.create_pen(*color.rgb()))
@@ -63,7 +64,8 @@ class Display:
         self.graphics.set_font("bitmap8")
         width = self.graphics.measure_text(message, scale=1)
         if width > self.width:
-            return
+            message = '...'
+            width = self.graphics.measure_text(message, scale=1)
         x = round((self.width - width) / 2)
         y = round((self.height - 8) / 2)
         self.graphics.set_pen(self.graphics.create_pen(*color.rgb()))

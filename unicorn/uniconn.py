@@ -1,6 +1,6 @@
 import machine
 import ujson
-from time import sleep
+from time import sleep, sleep_ms
 from uclib import *
 
 
@@ -101,5 +101,6 @@ class Uniconn:
                     info('announced with ' + self.mqtt.announcement[0] + ': ' + self.mqtt.announcement[1])
                 if len(self.jobs) > 0:
                     self.draw(self.jobs.pop(0))
+                sleep_ms(10)
             except Exception as e:
                 self.panic(e, 'error')
