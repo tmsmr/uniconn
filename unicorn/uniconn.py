@@ -1,6 +1,5 @@
 import machine
-import ujson
-from time import sleep, sleep_ms
+from time import sleep, sleep_ms, ticks_ms
 from uclib import *
 
 
@@ -34,10 +33,13 @@ class Uniconn:
         self.jobs.append(DrawingJob(topic, payload))
 
     def draw(self, job):
-        if job.topic.endswith('text'):
-            payload = job.data.decode('utf-8')
-            info('writing "' + payload + '" to display')
-            self.display.text(payload)
+        start = ticks_ms()
+        if job.topic.endswith('/text'):
+            self.display.draw(TextFrame.from_bytes(job.data))
+            info('drawing text frame took: %d ms' % (ticks_ms() - start))
+        if job.topic.endswith('/pixels'):
+            self.display.draw(PixelFrame.from_bytes(job.data))
+            info('drawing pixels frame took: %d ms' % (ticks_ms() - start))
 
     def initialize(self):
         self.conf = Config.load(self.CONFIG_FILE)
@@ -80,6 +82,8 @@ class Uniconn:
             self.mqtt = Mqtt(self.conf, self.callback, [
                 self.conf.mqtt_topic_base + '/text',
                 self.conf.mqtt_all_topic_base + '/text',
+                self.conf.mqtt_topic_base + '/pixels',
+                self.conf.mqtt_all_topic_base + '/pixels',
             ], announcement, testament)
             self.mqtt.connect()
             info('connected to broker ' + self.conf.mqtt_host
