@@ -25,7 +25,8 @@ mqttc.tls_set(
 
 def on_connect(client, userdata, flags, reason_code, properties):
     print(reason_code)
-    client.subscribe((config['mqtt_topic_base'] + '/text', SubscribeOptions(qos=0)))
+    client.subscribe((config['mqtt_topic_base'] + '/#', SubscribeOptions(qos=0)))
+    client.subscribe((config['mqtt_all_topic_base'] + '/#', SubscribeOptions(qos=0)))
 
 
 def on_log(client, userdata, level, buf):
