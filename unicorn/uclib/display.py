@@ -78,7 +78,7 @@ class Display:
             colormap = frame.colormap()
             for y in range(frame.h):
                 for x in range(frame.w):
-                    lookup = (y * frame.w) * 3
+                    lookup = (y * frame.w * 3) + (x * 3)
                     self.graphics.set_pen(self.graphics.create_pen(*colormap[lookup:lookup + 3]))
                     self.graphics.pixel(frame.x + x, frame.y + y)
             self.update()
