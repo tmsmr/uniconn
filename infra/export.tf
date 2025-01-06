@@ -18,6 +18,8 @@ resource "local_file" "controller_config" {
   content = jsonencode(merge(each.value.mqtt_conn_config, {
     mqtt_all_topic_base    = "${random_pet.deployment.id}/all"
     mqtt_status_topic_base = "${random_pet.deployment.id}/status"
+    iot_core_https_host    = each.value.mqtt_conn_config.mqtt_host
+    iot_core_https_port    = 8443
     unicorns               = [
       for name, unicorn in module.unicorn : {
         unicorn_name    = name
