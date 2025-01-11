@@ -3,12 +3,6 @@ from time import sleep, sleep_ms, ticks_ms
 from uclib import *
 
 
-class DrawingJob:
-    def __init__(self, topic, data):
-        self.topic = topic
-        self.data = data
-
-
 class Uniconn:
     CONFIG_FILE = 'config/config.json'
 
@@ -17,7 +11,10 @@ class Uniconn:
         self.conf = None
         self.display = None
         self.mqtt = None
-        self.jobs = []
+        self.tick_ms = 10
+
+        self.permanent = ColorFrame(0, 0, 0, 0)
+        self.remaining = 0.0
 
     def panic(self, msg, comp):
         error(msg)
@@ -28,18 +25,29 @@ class Uniconn:
         machine.reset()
 
     def callback(self, topic, payload):
+        run_gc()
+
         topic = topic.decode('utf-8')
         info('received ' + str(len(payload)) + ' bytes from ' + topic)
-        self.jobs.append(DrawingJob(topic, payload))
 
-    def draw(self, job):
+        if topic.endswith('/text'):
+            frame = TextFrame.from_bytes(payload)
+        elif topic.endswith('/pixels'):
+            frame = PixelFrame.from_bytes(payload)
+        else:
+            frame = ColorFrame(0, 0, 0, 0)
+
+        self.draw(frame)
+
+        if frame.temporary():
+            self.remaining = float(frame.duration()) * 1000
+        else:
+            self.permanent = frame
+
+    def draw(self, frame):
         start = ticks_ms()
-        if job.topic.endswith('/text'):
-            self.display.draw(TextFrame.from_bytes(job.data))
-            info('drawing text frame took: %d ms' % (ticks_ms() - start))
-        if job.topic.endswith('/pixels'):
-            self.display.draw(PixelFrame.from_bytes(job.data))
-            info('drawing pixels frame took: %d ms' % (ticks_ms() - start))
+        self.display.draw(frame)
+        info('drawing frame %s took: %d ms' % (frame, ticks_ms() - start))
 
     def initialize(self):
         self.conf = Config.load(self.CONFIG_FILE)
@@ -92,6 +100,8 @@ class Uniconn:
         except Exception as e:
             self.panic(e, 'envelope')
 
+        self.draw(self.permanent)
+
     def run(self):
         while True:
             try:
@@ -100,8 +110,12 @@ class Uniconn:
                     info('broker ' + self.conf.mqtt_host + ' pinged')
                 if announce:
                     info('announced with ' + self.mqtt.announcement[0] + ': ' + self.mqtt.announcement[1])
-                if len(self.jobs) > 0:
-                    self.draw(self.jobs.pop(0))
-                sleep_ms(10)
+
+                if self.remaining > 0:
+                    self.remaining -= self.tick_ms
+                    if self.remaining <= 0:
+                        self.draw(self.permanent)
+
+                sleep_ms(self.tick_ms)
             except Exception as e:
                 self.panic(e, 'error')
