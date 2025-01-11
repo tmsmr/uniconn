@@ -70,7 +70,7 @@ class Display:
             y = round((self.height - 8) / 2)
             self.graphics.set_pen(self.graphics.create_pen(*frame.text_color()))
             self.graphics.text(message, x, y, scale=1)
-            self.update()
+
         if frame.t == Frame.PIXELS:
             if frame.w < self.width or frame.h < self.height:
                 self.graphics.set_pen(self.graphics.create_pen(*frame.bg_color()))
@@ -81,4 +81,9 @@ class Display:
                     lookup = (y * frame.w * 3) + (x * 3)
                     self.graphics.set_pen(self.graphics.create_pen(*colormap[lookup:lookup + 3]))
                     self.graphics.pixel(frame.x + x, frame.y + y)
-            self.update()
+
+        if frame.t == Frame.COLOR:
+            self.graphics.set_pen(self.graphics.create_pen(*frame.bg_color()))
+            self.graphics.clear()
+
+        self.update()
