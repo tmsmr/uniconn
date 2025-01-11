@@ -37,6 +37,7 @@ class Uniconn:
         else:
             frame = ColorFrame(0, 0, 0, 0)
 
+        # TODO: draw outside of callback
         self.draw(frame)
 
         if frame.temporary():

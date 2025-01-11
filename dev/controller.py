@@ -52,11 +52,12 @@ while True:
             lt = localtime()
             val = ':'.join(['%02d' % lt.tm_hour, '%02d' % lt.tm_min])
             payload = {
+                'd': 0,
                 'br': 0,
                 'bg': 0,
                 'bb': 0,
-                'r': 0,
-                'g': 0,
+                'r': 255,
+                'g': 255,
                 'b': 255,
                 'v': val
             }
@@ -77,6 +78,7 @@ while True:
             b64 = binascii.b2a_base64(zipped)
             val = b64.decode('utf-8')
             payload = {
+                'd': 1,
                 'br': 0,
                 'bg': 0,
                 'bb': 0,
@@ -88,4 +90,4 @@ while True:
             }
             topic = config['mqtt_all_topic_base'] + '/pixels'
             mqttc.publish(topic, json.dumps(payload))
-        sleep(1)
+        sleep(10)
